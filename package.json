@@ -1,0 +1,21 @@
+{
+  "name": "binancelauchpadbuy",
+  "version": "0.0.1",
+  "description": "Bot buy lauchpad",
+  "author": "alexandre bouttier",
+  "main": "app.js",
+  "dependencies": {
+    "ccxt": "^1.41.99",
+    "cmlog": "^1.0.4",
+    "lodash": "^4.17.20",
+    "node-cron": "^2.0.3",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  }
+}
