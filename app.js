@@ -50,31 +50,58 @@ cmlog.info(
   `Bot démarrer sur ${SYMBOL}  avec la clé APIKEY=${APIKEY} APISECRET=${APISECRET} `
 );
 
-cron.schedule(TIME, () => {
-  const exchangeClass = ccxt['binance'];
-  const exchange = new exchangeClass({
-    apiKey: APIKEY,
-    secret: APISECRET,
-  });
-  let binance = new ccxt.binance();
-
-  binance.fetchTicker(SYMBOL).then((res) => {
-    const lastPrice = res.last;
-
-    let quantity = Number(SOMME) / lastPrice;
-
-    exchange
-      .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
-      .then((res) => {
-        logger.info('Ordre exécuté avec succées');
-        cmlog.success('Ordre exécuté avec success !');
-      })
-      .catch((err) => {
-        console.log('erreur', err);
-        logger.info('Ordre exécuté avec succées');
-        logger.error('Ordre exécuté avec succées');
-        cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
-        return;
-      });
-  });
+//cron.schedule(TIME, () => {
+const exchangeClass = ccxt['binance'];
+const exchange = new exchangeClass({
+  apiKey: APIKEY,
+  secret: APISECRET,
 });
+let binance = new ccxt.binance();
+
+binance.fetchTicker(SYMBOL).then((res) => {
+  const lastPrice = res.last;
+
+  let quantity = Number(SOMME) / lastPrice;
+
+  console.log('quantity', quantity);
+  console.log('quantity £', quantity.toFixed(5) * 0.9);
+
+  exchange
+    .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
+    .then((ordre) => {
+      logger.info(
+        `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
+      );
+      cmlog.success('Ordre exécuté avec success !');
+    })
+    .catch((err) => {
+      logger.error("Une erreur est survenu lors de l'ordre", err);
+      cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
+
+      setTimeout(() => {
+        binance.fetchTicker(SYMBOL).then((res) => {
+          const lastPrice = res.last;
+
+          let quantity = Number(SOMME) / lastPrice;
+
+          console.log('quantity', quantity);
+          console.log('quantity £', quantity.toFixed(5) * 0.9);
+
+          exchange
+            .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
+            .then((ordre) => {
+              logger.info(
+                `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
+              );
+              cmlog.success('Ordre exécuté avec success !');
+            })
+            .catch((err) => {
+              logger.error("Une erreur est survenu lors de l'ordre", err);
+              cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
+              return;
+            });
+        });
+      }, 60000);
+    });
+});
+//});
