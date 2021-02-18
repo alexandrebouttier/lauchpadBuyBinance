@@ -16,8 +16,8 @@ Minute,heure,jour,mois
 00 10 19 02 *
 ```
 
-APIKEY=macleapi APISECRET=monapisecret SYMBOL=ETH/USDT SOMME=100 TIME="00 10 19 02 \*" yarn start
+APIKEY=macleapi APISECRET=monapisecret SYMBOL=ETH/USDT SOMME=100 TIME="00 10 19 02 *" yarn start
 
 ## Start serveur PM2
 
-APIKEY=monapikey APISECRET=monapisecret SYMBOL=DODO/USDT SOMME=200 TIME="02 09 19 02 \*" pm2 start --name bot-binance-lauchpad ./app.js
+APIKEY=monapikey APISECRET=monapisecret SYMBOL=DODO/USDT SOMME=200 TIME="02 09 19 02 *" pm2 start --name bot-binance-lauchpad ./app.js
