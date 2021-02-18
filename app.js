@@ -9,10 +9,6 @@ const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
   transports: [
-    //
-    // - Write to all logs with level `info` and below to `combined.log`
-    // - Write all logs error (and below) to `error.log`.
-    //
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
     new winston.transports.File({ filename: 'combined.log' }),
   ],
@@ -50,58 +46,54 @@ cmlog.info(
   `Bot démarrer sur ${SYMBOL}  avec la clé APIKEY=${APIKEY} APISECRET=${APISECRET} `
 );
 
-//cron.schedule(TIME, () => {
-const exchangeClass = ccxt['binance'];
-const exchange = new exchangeClass({
-  apiKey: APIKEY,
-  secret: APISECRET,
+cron.schedule(TIME, () => {
+  const exchangeClass = ccxt['binance'];
+  const exchange = new exchangeClass({
+    apiKey: APIKEY,
+    secret: APISECRET,
+  });
+  let binance = new ccxt.binance();
+
+  binance.fetchTicker(SYMBOL).then((res) => {
+    const lastPrice = res.last;
+
+    let quantity = Number(SOMME) / lastPrice;
+
+    exchange
+      .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
+      .then((ordre) => {
+        logger.info(
+          `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
+        );
+        cmlog.success('Ordre exécuté avec success !');
+      })
+      .catch((err) => {
+        logger.error("Une erreur est survenu lors de l'ordre", err);
+        cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
+
+        setTimeout(() => {
+          binance.fetchTicker(SYMBOL).then((res) => {
+            const lastPrice = res.last;
+
+            let quantity = Number(SOMME) / lastPrice;
+
+            exchange
+              .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
+              .then((ordre) => {
+                logger.info(
+                  `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
+                );
+                cmlog.success('Ordre exécuté avec success !');
+              })
+              .catch((err) => {
+                logger.error("Une erreur est survenu lors de l'ordre", err);
+                cmlog.error(
+                  new Error("Une erreur est survenu lors de l'ordre")
+                );
+                return;
+              });
+          });
+        }, 60000);
+      });
+  });
 });
-let binance = new ccxt.binance();
-
-binance.fetchTicker(SYMBOL).then((res) => {
-  const lastPrice = res.last;
-
-  let quantity = Number(SOMME) / lastPrice;
-
-  console.log('quantity', quantity);
-  console.log('quantity £', quantity.toFixed(5) * 0.9);
-
-  exchange
-    .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
-    .then((ordre) => {
-      logger.info(
-        `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
-      );
-      cmlog.success('Ordre exécuté avec success !');
-    })
-    .catch((err) => {
-      logger.error("Une erreur est survenu lors de l'ordre", err);
-      cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
-
-      setTimeout(() => {
-        binance.fetchTicker(SYMBOL).then((res) => {
-          const lastPrice = res.last;
-
-          let quantity = Number(SOMME) / lastPrice;
-
-          console.log('quantity', quantity);
-          console.log('quantity £', quantity.toFixed(5) * 0.9);
-
-          exchange
-            .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
-            .then((ordre) => {
-              logger.info(
-                `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
-              );
-              cmlog.success('Ordre exécuté avec success !');
-            })
-            .catch((err) => {
-              logger.error("Une erreur est survenu lors de l'ordre", err);
-              cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
-              return;
-            });
-        });
-      }, 60000);
-    });
-});
-//});
