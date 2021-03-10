@@ -16,7 +16,7 @@ Minute,heure,jour,mois
 00 10 19 02 *
 ```
 
-# Changer le fusion horaire de son serveur
+## Changer le fusion horaire de son serveur
 
 ```
 sudo timedatectl set-timezone Europe/Paris
