@@ -1,5 +1,7 @@
 # Binance Lauchpad Buy Bot
 
+Robot pour acheter une crypto sur Binance à une date et heure précise ,et revendre à un temps donné , peux être utiliser pour les lauchpads de Binance
+
 ## Installation
 
 ```
