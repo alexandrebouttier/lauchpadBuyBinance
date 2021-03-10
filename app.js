@@ -80,7 +80,7 @@ cron.schedule(TIME, () => {
         return exchange
           .fetchBalance()
           .then((data) => {
-            const quantity = data['free']['ETH'];
+            const quantity = data['free']['DEGO'];
 
             return exchange
               .createOrder(SYMBOL, 'market', 'sell', quantity)
