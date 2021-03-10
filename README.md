@@ -16,6 +16,12 @@ Minute,heure,jour,mois
 00 10 19 02 *
 ```
 
+# Changer le fusion horaire de son serveur
+
+```
+sudo timedatectl set-timezone Europe/Paris
+```
+
 APIKEY=macleapi APISECRET=monapisecret SYMBOL=ETH/USDT SOMME=100 TIME="00 10 19 02 *" yarn start
 
 ## Start serveur PM2
