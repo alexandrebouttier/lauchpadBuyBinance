@@ -54,46 +54,49 @@ cron.schedule(TIME, () => {
   });
   let binance = new ccxt.binance();
 
-  binance.fetchTicker(SYMBOL).then((res) => {
-    const lastPrice = res.last;
+  binance
+    .fetchTicker(SYMBOL)
+    .then((res) => {
+      const lastPrice = res.last;
 
-    let quantity = Number(SOMME) / lastPrice;
+      let quantity = Number(SOMME) / lastPrice;
 
-    exchange
-      .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
-      .then((ordre) => {
-        logger.info(
-          `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
-        );
-        cmlog.success('Ordre exécuté avec success !');
-      })
-      .catch((err) => {
-        logger.error("Une erreur est survenu lors de l'ordre", err);
-        cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
+      exchange
+        .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
+        .then((ordre) => {
+          logger.info(
+            `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
+          );
+          cmlog.success('Ordre exécuté avec success !');
+        })
+        .catch((err) => {
+          logger.error("Une erreur est survenu lors de l'ordre", err);
+          cmlog.error(new Error("Une erreur est survenu lors de l'ordre"));
+        });
+    })
+    .then(() => {
+      /// VENTE 1S APRES
+      setTimeout(() => {
+        return exchange
+          .fetchBalance()
+          .then((data) => {
+            const quantity = data['free']['ETH'];
 
-        setTimeout(() => {
-          binance.fetchTicker(SYMBOL).then((res) => {
-            const lastPrice = res.last;
-
-            let quantity = Number(SOMME) / lastPrice;
-
-            exchange
-              .createOrder(SYMBOL, 'market', 'buy', quantity.toFixed(5) * 0.9)
+            return exchange
+              .createOrder(SYMBOL, 'market', 'sell', quantity)
               .then((ordre) => {
                 logger.info(
-                  `Votre ordre sur ${ordre.symbol} à était exécuté avec succées au prix de ${ordre.price}`
+                  `Votre ordre de VENTE sur ${ordre.symbol}  à était exécuté avec succées au prix de ${ordre.price}`
                 );
                 cmlog.success('Ordre exécuté avec success !');
-              })
-              .catch((err) => {
-                logger.error("Une erreur est survenu lors de l'ordre", err);
-                cmlog.error(
-                  new Error("Une erreur est survenu lors de l'ordre")
-                );
-                return;
               });
+          })
+          .catch((err) => {
+            logger.error(
+              'Une erreur est survenu lors de la récupération de la balance',
+              err
+            );
           });
-        }, 60000);
-      });
-  });
+      }, 1000);
+    });
 });
