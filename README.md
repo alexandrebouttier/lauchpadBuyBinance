@@ -1,24 +1,27 @@
 # Binance Lauchpad Buy Bot
 
-Robot pour acheter une crypto sur Binance à une date et heure précise ,et revendre à un temps donné , peux être utiliser pour les lauchpads de Binance
+Robot to buy crypto on Binance at a specific date and time, and resell at a specific time, can be used for Binance lauchpads
 
-## Installation
-
-```
-yarn  ou  npm install
-```
-
-## Lancer le bot
-
-Exemples date : 10H00 le 19 février
-Aide cron https://crontab.guru/
+## Setup
 
 ```
-Minute,heure,jour,mois
+yarn  or  npm install
+```
+
+## Launch the bot
+
+
+
+Examples date : 10H00 le 19 février
+Help cron https://crontab.guru/
+
+```
+Minute,hour,day,month
 00 10 19 02 *
 ```
 
-## Changer le fusion horaire de son serveur
+## Change the time zone of your server
+
 
 ```
 sudo timedatectl set-timezone Europe/Paris
